@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -14,7 +15,7 @@ type Point struct {
 }
 
 type Card struct {
-	Val      rune
+	Val     int 
 	Position Point
 	Shown    bool
 }
@@ -28,7 +29,7 @@ func (this *Card) Draw(screen *ebiten.Image) {
 
 		ebitenutil.DebugPrintAt(
 			screen,
-			string(this.Val),
+			fmt.Sprintf("%d", this.Val),
 			int(this.Position.X+20),
 			int(this.Position.Y+25),
 		)
@@ -42,11 +43,14 @@ func (this *Card) Update(g *Game) {
 
 	if this.Position.X <= mx && this.Position.X+50 >= mx && this.Position.Y <= my && this.Position.Y+75 >= my {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
-			this.Flip()
+			this.Flip(g)
 		}
 	}
 }
 
-func (this *Card) Flip() {
-	this.Shown = !this.Shown
+func (this *Card) Flip(g *Game) {
+	if !this.Shown {
+		this.Shown = true
+		g.FlipCard(this)
+	}
 }
